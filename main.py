@@ -72,9 +72,15 @@ def show_person(
             min_length=1,
             max_length=50,
             title='Persona name',
-            description='This is the persona name. It is between 1 and 50 characters.'
+            description='This is the persona name. It is between 1 and 50 characters.',
+            example='Suri'
         ),
-        age: int = Query(...)
+        age: str = Query(
+            ...,
+            title='Person age',
+            description='This is the persona age. It is required.',
+            example=18
+        )
 ):
     """Validate query parameters."""
     return {name: age}
@@ -88,6 +94,7 @@ def show_person_detail(
             gt=0,
             title='Person',
             description='Showing person with id',
+            example=23,
         ),
 ):
     """Return a person detail."""
@@ -101,7 +108,8 @@ def update_person(
             ...,
             title='Person ID',
             description='This is the person ID',
-            gt=0
+            gt=0,
+            example=23
         ),
         person: Person = Body(...),
 ):
