@@ -1,5 +1,11 @@
 # Fast API Intro
 
+<div align="center">
+	<p align="center">
+		<img src="https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png" />
+	</p>
+</div>
+
 ## Steps
 
 1. Run service
