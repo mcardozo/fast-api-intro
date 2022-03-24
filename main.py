@@ -10,6 +10,14 @@ from pydantic import BaseModel
 from fastapi import Body, FastAPI, Query, Path
 
 # Models
+class Location(BaseModel):
+    """Location model."""
+
+    city: str
+    state: str
+    country: str
+
+
 class Person(BaseModel):
     """Person model."""
 
@@ -49,6 +57,7 @@ def show_person(
     return {name: age}
 
 
+# Validate: Path Parameters
 @app.get('/person/detail/{person_id}')
 def show_person_detail(
         person_id: int = Path(
@@ -60,3 +69,21 @@ def show_person_detail(
 ):
     """Return a person detail."""
     return {person_id: "It exist!"}
+
+
+# Validate: Request body
+@app.put('/person/{person_id}')
+def update_person(
+        person_id: int = Path(
+            ...,
+            title='Person ID',
+            description='This is the person ID',
+            gt=0
+        ),
+        person: Person = Body(...),
+        location: Location = Body(...)
+):
+    """Update a person."""
+    results = person.dict()
+    results.update(location.dict())
+    return results
