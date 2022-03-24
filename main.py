@@ -14,9 +14,9 @@ from fastapi import Body, FastAPI, Query, Path
 class Location(BaseModel):
     """Location model."""
 
-    city: str = Field(..., min_length=1, max_length=50)
-    state: str = Field(..., min_length=1, max_length=50)
-    country: str = Field(..., min_length=1, max_length=50)
+    city: str = Field(..., min_length=1, max_length=50, example='Tigre')
+    state: str = Field(..., min_length=1, max_length=50, example='Buenos Aires')
+    country: str = Field(..., min_length=1, max_length=50, example='Argentina')
 
 
 class HairColor(Enum):
@@ -38,6 +38,18 @@ class Person(BaseModel):
     is_married: Optional[bool] = Field(default=None)
     email: EmailStr = Field(...);
 
+    class Config:
+        """Testing data."""
+
+        schema_extra = {
+            'example': {
+                'first_name': 'Marisol',
+                'last_name': 'Cardozo',
+                'age': 34,
+                'hair_color': 'blonde',
+                'is_married': False
+            }
+        }
 
 app = FastAPI()
 
@@ -92,9 +104,37 @@ def update_person(
             gt=0
         ),
         person: Person = Body(...),
+):
+    """Update a person."""
+    return person
+
+
+@app.put('/person-location/{person_id}')
+def update_person_location(
+        person_id: int = Path(
+            ...,
+            title='Person and location',
+            description='Update a person and location',
+            gt=0
+        ),
+        person: Person = Body(...),
         location: Location = Body(...)
 ):
     """Update a person."""
     results = person.dict()
     results.update(location.dict())
     return results
+
+
+@app.put('/location/{location_id}')
+def update_location(
+        location_id: int = Path(
+            ...,
+            title='Location ID',
+            description='Update location',
+            gt=0
+        ),
+        location: Location = Body(...)
+):
+    """Update a person."""
+    return location
