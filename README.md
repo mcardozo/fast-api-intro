@@ -7,3 +7,7 @@
 		(venv)$ uvicorn main:app --reload
 
 2. See documetation through Swagger UI Request URL: `127.0.0.1:8000/docs` or through Redoc `127.0.0.1:8000/redoc`
+
+## Utils
+
+* [Pydantic Types](https://pydantic-docs.helpmanual.io/usage/types/#pydantic-types)

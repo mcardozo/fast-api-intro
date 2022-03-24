@@ -5,7 +5,7 @@ from typing import Optional
 from enum import Enum
 
 # Pydantic
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, EmailStr, Field
 
 # FastAPI
 from fastapi import Body, FastAPI, Query, Path
@@ -14,9 +14,9 @@ from fastapi import Body, FastAPI, Query, Path
 class Location(BaseModel):
     """Location model."""
 
-    city: str
-    state: str
-    country: str
+    city: str = Field(..., min_length=1, max_length=50)
+    state: str = Field(..., min_length=1, max_length=50)
+    country: str = Field(..., min_length=1, max_length=50)
 
 
 class HairColor(Enum):
@@ -36,6 +36,7 @@ class Person(BaseModel):
     age: int = Field(..., gt=0, le=115)
     hair_color: Optional[HairColor] = Field(default=None)
     is_married: Optional[bool] = Field(default=None)
+    email: EmailStr = Field(...);
 
 
 app = FastAPI()
