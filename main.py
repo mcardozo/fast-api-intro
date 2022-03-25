@@ -37,6 +37,7 @@ class Person(BaseModel):
     hair_color: Optional[HairColor] = Field(default=None)
     is_married: Optional[bool] = Field(default=None)
     email: EmailStr = Field(...);
+    password: str = Field(..., min_length=8)
 
     class Config:
         """Testing data."""
@@ -47,9 +48,12 @@ class Person(BaseModel):
                 'last_name': 'Cardozo',
                 'age': 34,
                 'hair_color': 'blonde',
-                'is_married': False
+                'is_married': False,
+                'email': 'cardozomarisolp@gmail.com',
+                'password': 'password'
             }
         }
+
 
 app = FastAPI()
 
@@ -59,7 +63,7 @@ def home():
     return {'hello': 'world'}
 
 
-@app.post('/person/new')
+@app.post('/person/new', response_model=Person, response_model_exclude={'password'})
 def create_person(person: Person = Body(...)):
     """Create a person."""
     return person
