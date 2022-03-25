@@ -8,7 +8,7 @@ from enum import Enum
 from pydantic import BaseModel, EmailStr, Field
 
 # FastAPI
-from fastapi import Body, FastAPI, Query, Path
+from fastapi import Body, FastAPI, Query, Path, status
 
 # Models
 class Location(BaseModel):
@@ -57,19 +57,19 @@ class Person(BaseModel):
 
 app = FastAPI()
 
-@app.get('/')
+@app.get(path='/', status_code=status.HTTP_200_OK)
 def home():
     """Home page."""
     return {'hello': 'world'}
 
 
-@app.post('/person/new', response_model=Person, response_model_exclude={'password'})
+@app.post(path='/person/new', response_model=Person, response_model_exclude={'password'}, status_code=status.HTTP_201_CREATED)
 def create_person(person: Person = Body(...)):
     """Create a person."""
     return person
 
 
-@app.get('/person/detail')
+@app.get(path='/person/detail', status_code=status.HTTP_200_OK)
 def show_person(
         name: Optional[str] = Query(
             None,
@@ -91,7 +91,7 @@ def show_person(
 
 
 # Validate: Path Parameters
-@app.get('/person/detail/{person_id}')
+@app.get(path='/person/detail/{person_id}', status_code=status.HTTP_200_OK)
 def show_person_detail(
         person_id: int = Path(
             ...,
@@ -106,7 +106,7 @@ def show_person_detail(
 
 
 # Validate: Request body
-@app.put('/person/{person_id}')
+@app.put(path='/person/{person_id}', status_code=status.HTTP_202_ACCEPTED)
 def update_person(
         person_id: int = Path(
             ...,
@@ -121,7 +121,7 @@ def update_person(
     return person
 
 
-@app.put('/person-location/{person_id}')
+@app.put(path='/person-location/{person_id}', status_code=status.HTTP_202_ACCEPTED)
 def update_person_location(
         person_id: int = Path(
             ...,
@@ -138,7 +138,7 @@ def update_person_location(
     return results
 
 
-@app.put('/location/{location_id}')
+@app.put(path='/location/{location_id}', status_code=status.HTTP_202_ACCEPTED)
 def update_location(
         location_id: int = Path(
             ...,
