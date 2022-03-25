@@ -8,7 +8,7 @@ from enum import Enum
 from pydantic import BaseModel, EmailStr, Field
 
 # FastAPI
-from fastapi import Body, FastAPI, Form, Query, Path, status
+from fastapi import Body, Cookie, FastAPI, Form, Header, Query, Path, status
 
 # Models
 class Location(BaseModel):
@@ -167,3 +167,17 @@ def update_location(
 def login(username: str = Form(...), password: str = Form(...)):
     """User login."""
     return LoginOut(username=username)
+
+
+# Cookies and header parameters
+@app.post(path='/contact', status_code=status.HTTP_200_OK)
+def contact(
+        first_name: str = Form(..., max_length=20, min_length=1),
+        last_name: str = Form(..., max_length=20, min_length=1),
+        email: EmailStr = Form(...),
+        message: str = Form(..., min_length=20),
+        user_agent: Optional[str] = Header(default=None),
+        ads: Optional[str] = Cookie(default=None)
+):
+    """Contact form."""
+    return user_agent
