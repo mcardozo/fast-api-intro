@@ -48,7 +48,7 @@ class Person(BaseModel):
     age: int = Field(..., gt=0, le=115)
     hair_color: Optional[HairColor] = Field(default=None)
     is_married: Optional[bool] = Field(default=None)
-    email: EmailStr = Field(...);
+    email: EmailStr = Field(...)
     password: str = Field(..., min_length=8)
 
     class Config:
@@ -85,10 +85,20 @@ def home():
     response_model=Person,
     response_model_exclude={'password'},
     status_code=status.HTTP_201_CREATED,
-    tags=['Persons']
+    tags=['Persons'],
+    summary='Create Person in the app.'
 )
 def create_person(person: Person = Body(...)):
-    """Create a person."""
+    """
+    Create Person.
+    This path operation creates a person in the app and save the information in the database.
+
+    Parameters:
+    - Request body parameter:
+       - **person: Person** -> A person model with first name, last name, hair color, marital status and email.
+
+    Returns a person model with first name, last name, hair color, marital status and email.
+    """
     return person
 
 
