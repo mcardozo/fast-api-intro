@@ -74,7 +74,7 @@ class LoginOut(BaseModel):
 
 app = FastAPI()
 
-@app.get(path='/', status_code=status.HTTP_200_OK)
+@app.get(path='/', status_code=status.HTTP_200_OK, tags=['Home'])
 def home():
     """Home page."""
     return {'hello': 'world'}
@@ -84,14 +84,15 @@ def home():
     path='/person/new',
     response_model=Person,
     response_model_exclude={'password'},
-    status_code=status.HTTP_201_CREATED
+    status_code=status.HTTP_201_CREATED,
+    tags=['Persons']
 )
 def create_person(person: Person = Body(...)):
     """Create a person."""
     return person
 
 
-@app.get(path='/person/detail', status_code=status.HTTP_200_OK)
+@app.get(path='/person/detail', status_code=status.HTTP_200_OK, tags=['Persons'])
 def show_person(
         name: Optional[str] = Query(
             None,
@@ -115,7 +116,7 @@ def show_person(
 persons = [1, 2, 3, 4, 5]
 
 # Validate: Path Parameters
-@app.get(path='/person/detail/{person_id}', status_code=status.HTTP_200_OK)
+@app.get(path='/person/detail/{person_id}', status_code=status.HTTP_200_OK, tags=['Persons'])
 def show_person_detail(
         person_id: int = Path(
             ...,
@@ -132,7 +133,7 @@ def show_person_detail(
 
 
 # Validate: Request body
-@app.put(path='/person/{person_id}', status_code=status.HTTP_202_ACCEPTED)
+@app.put(path='/person/{person_id}', status_code=status.HTTP_202_ACCEPTED, tags=['Persons'])
 def update_person(
         person_id: int = Path(
             ...,
@@ -147,7 +148,11 @@ def update_person(
     return person
 
 
-@app.put(path='/person-location/{person_id}', status_code=status.HTTP_202_ACCEPTED)
+@app.put(
+    path='/person-location/{person_id}',
+    status_code=status.HTTP_202_ACCEPTED,
+    tags=['Locations', 'Persons']
+)
 def update_person_location(
         person_id: int = Path(
             ...,
@@ -164,7 +169,7 @@ def update_person_location(
     return results
 
 
-@app.put(path='/location/{location_id}', status_code=status.HTTP_200_OK)
+@app.put(path='/location/{location_id}', status_code=status.HTTP_200_OK, tags=['Locations'])
 def update_location(
         location_id: int = Path(
             ...,
@@ -179,14 +184,14 @@ def update_location(
 
 
 # Forms
-@app.post(path='/login', response_model=LoginOut, status_code=status.HTTP_200_OK)
+@app.post(path='/login', response_model=LoginOut, status_code=status.HTTP_200_OK, tags=['Persons'])
 def login(username: str = Form(...), password: str = Form(...)):
     """User login."""
     return LoginOut(username=username)
 
 
 # Cookies and header parameters
-@app.post(path='/contact', status_code=status.HTTP_200_OK)
+@app.post(path='/contact', status_code=status.HTTP_200_OK, tags=['Forms'])
 def contact(
         first_name: str = Form(..., max_length=20, min_length=1),
         last_name: str = Form(..., max_length=20, min_length=1),
@@ -200,7 +205,7 @@ def contact(
 
 
 # Files
-@app.post(path='/post-image')
+@app.post(path='/post-image', tags=['Forms'])
 def post_image(image: UploadFile = File(...)):
     """Post image."""
     return {
