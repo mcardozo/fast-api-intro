@@ -8,7 +8,7 @@ from enum import Enum
 from pydantic import BaseModel, EmailStr, Field
 
 # FastAPI
-from fastapi import Body, FastAPI, Query, Path, status
+from fastapi import Body, FastAPI, Form, Query, Path, status
 
 # Models
 class Location(BaseModel):
@@ -55,6 +55,11 @@ class Person(BaseModel):
         }
 
 
+class LoginOut(BaseModel):
+    """Login Model."""
+    username: str = Field(..., max_length=20, example='mcardozo')
+
+
 app = FastAPI()
 
 @app.get(path='/', status_code=status.HTTP_200_OK)
@@ -63,7 +68,12 @@ def home():
     return {'hello': 'world'}
 
 
-@app.post(path='/person/new', response_model=Person, response_model_exclude={'password'}, status_code=status.HTTP_201_CREATED)
+@app.post(
+    path='/person/new',
+    response_model=Person,
+    response_model_exclude={'password'},
+    status_code=status.HTTP_201_CREATED
+)
 def create_person(person: Person = Body(...)):
     """Create a person."""
     return person
@@ -138,7 +148,7 @@ def update_person_location(
     return results
 
 
-@app.put(path='/location/{location_id}', status_code=status.HTTP_202_ACCEPTED)
+@app.put(path='/location/{location_id}', status_code=status.HTTP_200_OK)
 def update_location(
         location_id: int = Path(
             ...,
@@ -150,3 +160,10 @@ def update_location(
 ):
     """Update a person."""
     return location
+
+
+# Forms
+@app.post(path='/login', response_model=LoginOut, status_code=status.HTTP_200_OK)
+def login(username: str = Form(...), password: str = Form(...)):
+    """User login."""
+    return LoginOut(username=username)
